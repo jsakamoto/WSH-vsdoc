@@ -5,6 +5,11 @@ var WScript = {
 };
 
 var ActiveXObject = function (clsid) {
+    ///<param name="clsid">
+    // Specify CLSID of COM object to create. For example:
+    ///<para>"Scripting.FileSystemObject"</para>
+    ///<para>"WScript.Shell"</para>
+    ///</param>
     if (clsid == "Scripting.FileSystemObject") {
 
         var File = function () {
