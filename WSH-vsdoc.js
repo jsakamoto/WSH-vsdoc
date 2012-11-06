@@ -6,15 +6,37 @@ var WScript = {
 
 var ActiveXObject = function (clsid) {
     ///<param name="clsid">
-    // Specify CLSID of COM object to create. For example:
+    /// Specify CLSID of COM object to create. For example:
     ///<para>"Scripting.FileSystemObject"</para>
     ///<para>"WScript.Shell"</para>
     ///</param>
     if (clsid == "Scripting.FileSystemObject") {
+        var TextStream = function () {
+            this.AtEndOfStream = false;
+            this.Close = function () { };
+            this.ReadAll = function () { return ""; };
+        };
 
         var File = function () {
             this.Name = "";
             this.Size = 0;
+
+            this.OpenAsTextStream = function (iomode, format) {
+                /// <param name="iomode" type="int">
+                /// Optional. Can be one of three constants:
+                /// <para>1 : ForReading - Open a file for reading only. You can't write to this file.</para>
+                /// <para>2 : ForWriting - Open a file for writing.</para>
+                /// <para>8 : ForAppending - Open a file and write to the end of the file.</para>
+                /// </param>
+                /// <param name="format" type="int">
+                /// Optional. One of three Tristate values used to indicate the format of the opened file. If omitted, the file is opened as ASCII.Tristate values:
+                /// <para>-2 : TristateUseDefault - Opens the file using the system default.</para>
+                /// <para>-1 : TristateTrue - Opens the file as Unicode.</para>
+                /// <para> 0 : TristateFalse - Opens the file as ASCII.</para>
+                /// </param>
+                /// <returns type="TextStream" />
+                return new TextStream();
+            }
         };
 
         var Folder = function () {
@@ -26,9 +48,50 @@ var ActiveXObject = function (clsid) {
         Folder.prototype.SubFolders = [new Folder()];
 
         this.GetFolder = function (fullPath) { return new Folder(); };
+        this.FileExists = function (fullPath) {
+            /// <returns type="bool" />
+            return true;
+        };
         this.FolderExists = function (fullPath) { return true; };
         this.MoveFolder = function (sourceFullPath, destinationFullPath) { };
         this.CreateFolder = function (fullPath) { };
+        this.GetSpecialFolder = function (folderspec) {
+            /// <param name="folderspec" type="int">
+            /// Required. The name of the special folder to be returned. Can be any of the constants:
+            /// <para>0 : WindowsFolder - The Windows folder contains files installed by the Windows operating system.</para>
+            /// <para>1 : SystemFolder - The System folder contains libraries, fonts, and device drivers.</para>
+            /// <para>2 : TemporaryFolder - The Temp folder is used to store temporary files. Its path is found in the TMP environment variable.</para>
+            /// </param>
+        };
+        this.BuildPath = function (path, name) {
+            /// <param name="path" type="String">Required. Existing path to which name is appended. Path can be absolute or relative and need not specify an existing folder.</param>
+            /// <param name="name" type="String">Required. Name being appended to the existing path.</param>
+            /// <returns type="String" />
+            return "";
+        };
+        this.GetFile = function (filespec) {
+            /// <param name="filespec" type="String">Required. The filespec is the path (absolute or relative) to a specific file.</param>
+            /// <returns type="File" />
+            return new File();
+        };
+        this.OpenTextFile = function (filename, iomode, create, format) {
+            /// <param name="filename" type="String">Required. String expression that identifies the file to open.</param>
+            /// <param name="iomode" type="int">
+            /// Optional. Can be one of three constants:
+            /// <para>1 : ForReading - Open a file for reading only. You can't write to this file.</para>
+            /// <para>2 : ForWriting - Open a file for writing.</para>
+            /// <para>8 : ForAppending - Open a file and write to the end of the file.</para>
+            /// </param>
+            /// <param name="create" type="bool">Optional. Boolean value that indicates whether a new file can be created if the specified filename doesn't exist. The value is True if a new file is created, False if it isn't created. If omitted, a new file isn't created.</param>
+            /// <param name="format" type="int">
+            /// Optional. One of three Tristate values used to indicate the format of the opened file. If omitted, the file is opened as ASCII.Tristate values:
+            /// <para>-2 : TristateUseDefault - Opens the file using the system default.</para>
+            /// <para>-1 : TristateTrue - Opens the file as Unicode.</para>
+            /// <para> 0 : TristateFalse - Opens the file as ASCII.</para>
+            /// </param>
+            /// <returns type="TextStream" />
+            return new TextStream();
+        };
     }
 
     if (clsid == "WScript.Shell") {
