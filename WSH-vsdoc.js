@@ -9,6 +9,7 @@ var ActiveXObject = function (clsid) {
     /// Specify CLSID of COM object to create. For example:
     ///<para>"Scripting.FileSystemObject"</para>
     ///<para>"WScript.Shell"</para>
+    ///<para>"Scripting.Dictionary"</para>
     ///</param>
     if (clsid == "Scripting.FileSystemObject") {
         var TextStream = function () {
@@ -113,10 +114,87 @@ var ActiveXObject = function (clsid) {
             /// <param name="strType" type="String">Optional. String value indicating the value's data type, REG_SZ, REG_DWORD, REG_BINARY, REG_EXPAND_SZ. The REG_MULTI_SZ type is not supported for the RegWrite method.</param>
         }
     }
+
+    if (clsid == "Scripting.Dictionary")
+    {
+        // http://msdn.microsoft.com/en-us/library/x4k5wbx4.aspx
+        this.Add = function (key, item) { };
+        this.Items = function () { return new VBArray(null); };
+    }
 };
 
 var Enumerator = function (enumerable) {
     this.atEnd = function () { return false; };
     this.moveNext = function () { };
     this.item = function () { return enumerable[0]; };
+};
+
+var GetObject = function (pathname) {
+    /// <summary>
+    /// </summary>
+    /// <param name="pathname" type="String">ex) 'IIS://localhost/W3SVC/1/Root'</param>
+
+    var getObject = function (pathname, param) {
+    	/// <summary></summary>
+        /// <param name="pathname">ex) 'IIsWebVirtualDir'</param>
+    	/// <param name="param">ex) url</param>
+    	/// <returns type=""></returns>
+        if (pathname.toLowerCase() == 'iiswebvirtualdir') {
+            // http://msdn.microsoft.com/en-us/library/ms524579.aspx
+            return {
+                SetInfo: function () { },
+                Path: '',
+                AppPoolId: '',
+                EnableDirBrowsing: true,
+                AccessRead: true,
+                AccessWrite: false,
+                AccessSource: false,
+                AccessScript: false,
+                AccessExecute: false,
+                DontLog: false,
+                AuthAnonymous: true,
+                ///<summary>Oh</summary>
+                AuthBasic: true,
+                AuthNTLM: false,
+                AppCreate2: function (type) {
+                	/// <summary></summary>
+                    /// <param name="type" type="Number">
+                    /// <para>0: In Proc</para>
+                    /// <para>1: Out Of Proc</para>
+                    /// <para>2: Pooled Out Of Proc</para>
+                    /// </param>
+                },
+                AnonymousPasswordSync: true,
+                AnonymousUserName: '',
+                AnonymousUserPass: '',
+                EnableDefaultDoc: true,
+                DefaultDoc: '',
+                AdsPath: '',
+                ScriptMaps: new VBArray(null)
+            };
+        }
+        return {};
+    };
+
+    if (pathname.toLowerCase().substr(0, 4) == 'iis:') {
+        return {
+            GetObject: getObject,
+            Create: getObject
+        };
+    }
+
+    if (pathname.toLowerCase().substr(0, 6) == 'winnt:') {
+        return {
+            Create: function (pathname, param) {
+                return {
+                    SetInfo: function () { },
+                    SetPassword: function (passwordText) { },
+                    userFlags: 0
+                };
+            },
+            Add: function (pathname) { }
+        };
+    }
+
+    return {};
 };
