@@ -53,6 +53,12 @@ var ActiveXObject = function (clsid) {
             /// <returns type="bool" />
             return true;
         };
+        this.CopyFile = function (sourcePath, destinationPath, overwrite) {
+        	/// <param name="sourcePath" type="String"></param>
+        	/// <param name="destinationPath" type="String"></param>
+        	/// <param name="overwrite" optional="true" type="bool"></param>
+        };
+
         this.FolderExists = function (fullPath) { return true; };
         this.MoveFolder = function (sourceFullPath, destinationFullPath) { };
         this.CreateFolder = function (fullPath) { };
@@ -98,8 +104,8 @@ var ActiveXObject = function (clsid) {
     if (clsid == "WScript.Shell") {
         this.Run = function (command, windowStyle, waitOnReturn) {
             ///<param name="command" type="String"></param>
-            ///<param name="windowStyle" type="int">optional. 0:hidden, 1:restore, 2:minimize, 3:maximize, ...</param>
-            ///<param name="waitOnReturn" type="bool">optional.</param>
+            ///<param name="windowStyle" type="int" optional="true">0:hidden, 1:restore, 2:minimize, 3:maximize, ...</param>
+            ///<param name="waitOnReturn" type="bool" optional="true"></param>
         }
 
         // for Registry
